@@ -122,7 +122,9 @@
     
 
     // subject id
+    let exp_version = '0.0.2'
     const url_vars = jsPsych.data.urlVariables()
+    url_vars['exp_version'] = exp_version
     const user_info_trial = {
         type: jsPsychBrowserCheck,
         data: url_vars
@@ -226,7 +228,7 @@
     // build trial sequence:
     const intro = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: "<h3>Welcome to this visual search demo-experiment!</h3>"+
+        stimulus: "<h3>Welcome to this visual search demo-experiment! "+exp_version+"</h3>"+
         "<p>There will be 12 trials.</p><p>In the end, you can choose to save your data on OSF.</p>",
         choices: ["<p>Begin!</p>"],
         data:{
@@ -279,9 +281,6 @@
             if(xhr.status == 200){
                 var response = JSON.parse(xhr.responseText);
                 console.log(response.success);
-            }
-            else {
-                console.log(xhr.status)
             }
             done(); // invoking done() causes experiment to progress to next trial.
             };
@@ -344,7 +343,7 @@
     // const timeline_2 = [user_info_trial, preload, intro, ...present_6_absent_6, debrief, save_data, outro]
 
     // piloting from 
-    const timeline_0 = [user_info_trial, preload, intro, make_trial_sequence(false),make_trial_sequence(true), debrief, outro, save_data] // , 
+    const timeline_0 = [user_info_trial, preload, intro, make_trial_sequence(true), debrief,  save_data, outro] // , 
     // const timeline_1 = [user_info_trial, preload, intro, make_trial_sequence(false),make_trial_sequence(true), debrief, save_data, outro]
     // const timeline_2 = [user_info_trial, preload, intro, make_trial_sequence(false),make_trial_sequence(true), debrief, save_data, outro]
 
