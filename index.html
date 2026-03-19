@@ -124,7 +124,7 @@
     
 
     // subject id
-    let exp_version = '0.0.4'
+    let exp_version = '0.0.5'
     const url_vars = jsPsych.data.urlVariables()
     url_vars['exp_version'] = exp_version
     const user_info_trial = {
@@ -279,6 +279,7 @@
             window.xhr = $.post('https://www.lerenkijken.nl/api/save', jsPsych.data.get().json()).done(function(){
                 if(xhr.status == 200){
                     console.log('OK!');
+                    done()
                 } else{
                     console.log(xhr.status);
                 }
@@ -286,17 +287,6 @@
                 console.log(xhr.status);
             });
 
-            // var xhr = new XMLHttpRequest();
-            // xhr.open('POST', 'https://www.lerenkijken.nl/api/save');
-            // xhr.setRequestHeader('Content-Type', 'application/json');
-            // xhr.onload = function() {
-            // if(xhr.status == 200){
-            //     var response = JSON.parse(xhr.responseText);
-            //     console.log(response.success);
-            // }
-            // done(); // invoking done() causes experiment to progress to next trial.
-            // };
-            // xhr.send(jsPsych.data.get().json());
         }
     }
     
