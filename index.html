@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>NVP 2025 demo by Andre Sahakian</title>
+    <title>Exp 2</title>
     <!-- Get all the required libraries -->
     <script src="https://unpkg.com/jspsych@8.2.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
@@ -122,11 +122,14 @@
     }
 
     
-
+    let info_object = {mean_rt: 4.23, accuracy: 0.78, condition: 'valid cue'}
     // subject id
-    let exp_version = '0.0.5'
+    let exp_version = '0.0.6'
     const url_vars = jsPsych.data.urlVariables()
     url_vars['exp_version'] = exp_version
+    url_vars['exp_id'] = 'exp_2'
+    url_vars['user_summary_info'] = info_object
+
     const user_info_trial = {
         type: jsPsychBrowserCheck,
         data: url_vars
@@ -278,7 +281,7 @@
         func: function(done){
             window.xhr = $.post('https://www.lerenkijken.nl/api/save', jsPsych.data.get().json()).done(function(){
                 if(xhr.status == 200){
-                    console.log('OK!');
+                    // console.log('OK!');
                     done()
                 } else{
                     console.log(xhr.status);
