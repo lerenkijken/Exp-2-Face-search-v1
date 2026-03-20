@@ -16,6 +16,9 @@
     <script src="https://unpkg.com/@jspsych/plugin-browser-check@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-call-function@2.1.0"></script>
     <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+
+    <!-- defining all face stims -->
+    <script src="stims.js"></script>
     
     <!-- Styling -->
     <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />  
@@ -30,7 +33,7 @@
     //Initialize jsPsysch
     const jsPsych = initJsPsych({
         show_progress_bar: true,
-        message_progress_bar: 'Progress',
+        message_progress_bar: '',
         on_finish: function() {
             jsPsych.data.displayData();
         }
@@ -40,28 +43,35 @@
 
     // trial parameters
     const person_presentation_time = 1000
-    const grid_presentation_time = 1000
+    const post_person_gap = 500
+    const grid_presentation_time = 2000
+    const post_grid_gap = 500
 
-    
+    /*
+    NOTE!!!!!
 
+    // const stims    is defined in another file named: stim_names.js
 
-    // get stimuli
-    const stims = []
-    for (let i=0; i<31; i++){
-        stims.push('./imgs/Picture'+i+'.png')
+    */
 
-    }
-
-    function make_grid_stim(i){
+    function make_grid_stim(indices){
       let min_size = Math.min( window.innerWidth/3, window.innerHeight/4)
       let dim = min_size * 0.8
+      let w = 2444, h = 1718
+      let scaling = dim/w
+      let dim_w = w * scaling 
+      let dim_h = h * scaling 
 
-      return `
-      <img src="${stims[i[0]]}" width="${dim}" height="${dim}" > <img src="${stims[i[1]]}"width="${dim}" height="${dim}">  <img src="${stims[i[2]]}" width="${dim}" height="${dim}"> <br>
-      <img src="${stims[i[3]]}" width="${dim}" height="${dim}" > <img src="${stims[i[4]]}"width="${dim}" height="${dim}">  <img src="${stims[i[5]]}" width="${dim}" height="${dim}"> <br>
-      <img src="${stims[i[6]]}" width="${dim}" height="${dim}" > <img src="${stims[i[7]]}"width="${dim}" height="${dim}">  <img src="${stims[i[8]]}" width="${dim}" height="${dim}"> <br>
-      <img src="${stims[i[9]]}" width="${dim}" height="${dim}" > <img src="${stims[i[10]]}"width="${dim}" height="${dim}">  <img src="${stims[i[11]]}" width="${dim}" height="${dim}"> <br>     
-      ` 
+      let i = 0
+      let grid_stim = ''
+      for (let row=0;row<4;row++){
+            for (let col=0;col<3;col++){                
+                grid_stim += `<img src="${stims[indices[i]]}" width="${dim_w}" height="${dim_h}" >`
+                i++
+            }
+            grid_stim += '<br>' 
+      }
+      return grid_stim
 
     }
 
@@ -73,7 +83,7 @@
     }
 
     let exp_id = 'exp_2_piloting'
-    let info_object = {mean_rt: 4.23, accuracy: 0.78, condition: 'valid cue'}
+    let info_object = {mean_rt: 3.77, accuracy: 0.98, condition: 'valid cue'}
     // subject id
     let exp_version = '0.0.8'
     const url_vars = jsPsych.data.urlVariables()
@@ -89,9 +99,9 @@
 
     function make_trial_sequence(target_presence){
 
-        let all_indices = [...Array(31).keys()]
+        let all_indices = [...stims.keys()]
 
-        let target_index = jsPsych.randomization.randomInt(0, 30)
+        let target_index = jsPsych.randomization.randomInt(0, stims.length-1)
 
         all_indices.splice(target_index, 1)
 
@@ -112,10 +122,11 @@
         const show_person_to_search = {
             type: jsPsychImageKeyboardResponse,
             stimulus: stims[target_index],
-            stimulus_width: function(){return Math.min( window.innerWidth/3, window.innerHeight/4) },
+            stimulus_width: () => {return Math.min( window.innerWidth/3, window.innerHeight/4) * 1.5 },
             prompt: "<p>Find this person in the crowd.</p>",
             choices: 'NO_KEYS',
             trial_duration: person_presentation_time,
+            post_trial_gap: post_person_gap,
             data:{
                 label:'show_person_to_search',
                 target: target_index,
@@ -130,7 +141,7 @@
         choices: 'NO_KEYS',
         trial_duration: grid_presentation_time,
         save_trial_parameters:{stimulus:false},
-        post_trial_gap: 500,
+        post_trial_gap: post_grid_gap,
         data:{
             label:'show_grid',
             crowd: crowd_indices.toString()
@@ -140,9 +151,9 @@
         const ask_presence = {
             type: jsPsychImageButtonResponse,
             stimulus:  stims[target_index],
-            stimulus_width: function(){return Math.min( window.innerWidth/3, window.innerHeight/4) },
+            stimulus_width: () => {return Math.min( window.innerWidth/3, window.innerHeight/4) * 1.5 },
             prompt: "<p>Was this person there?</p>",
-            choices: ["<p>Yes</p>", "<p>No</p>"],
+            choices: ["Yes", "No"],
             data:{
                 label:'ask_presence',
                 target_presence: target_presence,
@@ -169,7 +180,7 @@
                 return "<p>You said this person was "+prev_response+"<br>How sure are you about that?</p>"
             },
             post_trial_gap: 750,
-            button_label: "<p>Continue</p>",    
+            button_label: "Continue",    
             data:{
                 label:'ask_confidence',
             }
@@ -187,11 +198,26 @@
         type: jsPsychHtmlButtonResponse,
         stimulus: "<h3>Welcome to this visual search demo-experiment! "+exp_version+"</h3>"+
         "<p>There will be 12 trials.</p><p>In the end, you can choose to save your data on OSF.</p>",
-        choices: ["<p>Begin!</p>"],
+        choices: ["Begin!"],
         data:{
             label:'intro',
         }
     };
+
+    const styling_trial = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus:"<h1>Welcome! This is h1 text</h1>"+
+        "<h2>And this is text in style h2</h2>"+
+        
+        
+        "<h3>There will be 12 trials(h3) </h3>"+
+        "<p>With a p tag the text is likt this There will be 12 trials.</p><p>In the end, you can choose to save your data on OSF.</p>",
+        choices: ["Begin!"],
+        data:{
+            label:'intro',
+        }
+    };
+    
     
 
     const debrief = {
@@ -206,7 +232,7 @@
             "<p>Tap below to save your data to OSF! Or close this window instead.</p>"
         },
         save_trial_parameters:{stimulus:false},
-        choices: ["<p>Save data!</p>"],
+        choices: ["Save data!"],
         data:{
             label:'debrief',
         },
@@ -217,7 +243,7 @@
     const outro = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: () => {return "Your data was successfully saved!"+
-        "You may close this window now" + summary_data
+        "You may close this window now"
         },
         choices: 'NO_KEYS',
         data:{
@@ -228,14 +254,7 @@
         }
     };
 
-    const summary_data_trial = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => "Status of summary retrival: " + summary_data ,
-        choices: ['q'],
-        data:{
-            label:'summary_data_trial',
-        },
-    };
+
 
 
     // get summary data
@@ -329,7 +348,7 @@
     // const timeline_2 = [user_info_trial, preload, intro, ...present_6_absent_6, debrief, save_data, outro]
 
     // piloting from 
-    const timeline_0 = [user_info_trial, summary_data_trial, preload, intro, make_trial_sequence(true), debrief,  save_data, outro] // , 
+    const timeline_0 = [user_info_trial, preload, styling_trial, intro, ...present_6_absent_6, debrief,  save_data, outro] // , 
     // const timeline_1 = [user_info_trial, preload, intro, make_trial_sequence(false),make_trial_sequence(true), debrief, save_data, outro]
     // const timeline_2 = [user_info_trial, preload, intro, make_trial_sequence(false),make_trial_sequence(true), debrief, save_data, outro]
 
