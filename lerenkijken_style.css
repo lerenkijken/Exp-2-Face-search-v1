@@ -1,0 +1,93 @@
+body {
+  background-color: #2d00c8;
+}
+
+.jspsych-display-element {
+  font-size: 25px;
+  color: white;
+}
+
+.jspsych-btn {
+    font-size: 30px;
+    border: 10px solid transparent;
+    border-radius: 16px;
+    color: #333;
+    background-color: #8ee86d8d;
+    border-color: #2f5920e9;
+    padding: 1px 60px;
+}
+.jspsych-slider::-webkit-slider-thumb {
+    border: 10px solid #2f5920e9;
+    height: 80px;
+    width: 80px;
+    border-radius: 40px;
+    background: #8ee86d8d;
+    margin-top: -20px;
+}   
+
+.jspsych-slider::-webkit-slider-runnable-track {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 60%;
+    height: 50px;
+    cursor: pointer;
+    background: #fff;
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    border-radius: 2px;
+    border: 5px solid #aaa;
+}     
+
+#jspsych-progressbar-container {
+    color: #000000e9;
+    border-bottom: 5px solid #2f5920e9;
+    background-color: #ffffff;
+}
+
+#jspsych-progressbar-container span {
+    font-size: 20px;
+    padding-right: 25px;
+}
+
+#jspsych-progressbar-outer {
+    background-color: #8ee86d8d;
+}
+
+#jspsych-progressbar-inner {
+    background-color: #2f5920e9;
+}
+
+
+/* Fonts */
+@font-face {
+  font-family: Malington; /* set name */
+  src: url(font_faces/Malinton-Semibold.ttf); /* url of the font */
+}
+
+@font-face {
+  font-family: Inter; /* set name */
+  src: url(font_faces/Inter_24pt-Regular.ttf); /* url of the font */
+}
+@font-face {
+  font-family: Inter; /* set name */
+  src: url(font_faces/Inter_24pt-Bold.ttf); /* url of the font */
+  font-weight: bold;
+}
+@font-face {
+  font-family: Inter; /* set name */
+  src: url(font_faces/Inter_24pt-Italic.ttf); /* url of the font */
+  font-style: italic;
+}
+
+p {
+  font-family: Inter; /* use font */
+}
+
+h1 {
+    font-family: Malington;
+}
+h2 {
+    font-family: Malington;
+}
+h3 {
+    font-family: Malington;
+}

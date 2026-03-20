@@ -17,60 +17,11 @@
     <script src="https://unpkg.com/@jspsych/plugin-call-function@2.1.0"></script>
     <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
     
-
+    <!-- Styling -->
     <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />  
-
+    <link rel="stylesheet" href="lerenkijken_style.css">
     <style> 
-        .jspsych-display-element {
-            font-size: 30px;
-        }
-        .jspsych-btn {
-            font-size: 30px;
-            border: 10px solid transparent;
-            border-radius: 16px;
-            color: #333;
-            background-color: #8ee86d8d;
-            border-color: #2f5920e9;
-            padding: 1px 60px;
-        }
-        .jspsych-slider::-webkit-slider-thumb {
-            border: 10px solid #2f5920e9;
-            height: 80px;
-            width: 80px;
-            border-radius: 40px;
-            background: #8ee86d8d;
-            margin-top: -20px;
-        }   
-        .jspsych-slider::-webkit-slider-runnable-track {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 60%;
-            height: 50px;
-            cursor: pointer;
-            background: #fff;
-            box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-            border-radius: 2px;
-            border: 5px solid #aaa;
-        }     
-
-        #jspsych-progressbar-container {
-            color: #000000e9;
-            border-bottom: 5px solid #2f5920e9;
-            background-color: #ffffff;
-        }
-
-        #jspsych-progressbar-container span {
-            font-size: 20px;
-            padding-right: 25px;
-        }
-
-        #jspsych-progressbar-outer {
-            background-color: #8ee86d8d;
-        }
-
-        #jspsych-progressbar-inner {
-            background-color: #2f5920e9;
-        }
+       
     </style>  
   </head>
   <body></body>
@@ -121,13 +72,14 @@
         images: stims,
     }
 
-    
+    let exp_id = 'exp_2_piloting'
     let info_object = {mean_rt: 4.23, accuracy: 0.78, condition: 'valid cue'}
     // subject id
-    let exp_version = '0.0.6'
+    let exp_version = '0.0.8'
     const url_vars = jsPsych.data.urlVariables()
+
     url_vars['exp_version'] = exp_version
-    url_vars['exp_id'] = 'exp_2'
+    url_vars['exp_id'] = exp_id
     url_vars['user_summary_info'] = info_object
 
     const user_info_trial = {
@@ -264,8 +216,9 @@
     };
     const outro = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: "<p>Your data was successfully saved!</p>"+
-        "<p>You may close this window now.</p>",
+        stimulus: () => {return "Your data was successfully saved!"+
+        "You may close this window now" + summary_data
+        },
         choices: 'NO_KEYS',
         data:{
             label:'outro',
@@ -274,6 +227,34 @@
             jsPsych.progressBar.progress = 1; // set progress bar to 100% full.
         }
     };
+
+    const summary_data_trial = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: () => "Status of summary retrival: " + summary_data ,
+        choices: ['q'],
+        data:{
+            label:'summary_data_trial',
+        },
+    };
+
+
+    // get summary data
+    let summary_data = "[....]" 
+
+    window.xhr = $.post('https://www.lerenkijken.nl/api/get_summary', {'exp_id': exp_id}).done(function(res){
+    if(xhr.status == 200){
+        // console.log('OK!');
+        summary_data = res 
+        } else{
+            console.log(xhr.status);
+            summary_data = '  retrieval of summary datas did not return 200  '
+        }
+    }).fail(function(){
+        console.log(xhr.status);
+        summary_data = '  retrieval of summary data failed  '
+    });
+
+    summary_data
 
     const save_data = {
         type: jsPsychCallFunction,
@@ -348,7 +329,7 @@
     // const timeline_2 = [user_info_trial, preload, intro, ...present_6_absent_6, debrief, save_data, outro]
 
     // piloting from 
-    const timeline_0 = [user_info_trial, preload, intro, make_trial_sequence(true), debrief,  save_data, outro] // , 
+    const timeline_0 = [user_info_trial, summary_data_trial, preload, intro, make_trial_sequence(true), debrief,  save_data, outro] // , 
     // const timeline_1 = [user_info_trial, preload, intro, make_trial_sequence(false),make_trial_sequence(true), debrief, save_data, outro]
     // const timeline_2 = [user_info_trial, preload, intro, make_trial_sequence(false),make_trial_sequence(true), debrief, save_data, outro]
 
