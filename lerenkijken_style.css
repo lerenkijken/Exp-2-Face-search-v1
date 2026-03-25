@@ -1,18 +1,14 @@
-body {
-  background-color: black;
-  color: white;
-}
 
 .jspsych-display-element {
   font-size: 35px;
-  background-color: black;
-  color: white;
+  color: black;
+  background-color: white;
 }
 
 .jspsych-content {
   font-size: 35px;
-  background-color: black;
-  color: white;
+  color: black;
+  background-color: white;
 }
 
 .jspsych-btn {
@@ -23,6 +19,8 @@ body {
     background-color: #2b00c8d0;
     padding: 0.6em 1.2em;
     font-family: Malington;
+    -webkit-user-select: none; /* Safari */
+            user-select: none; 
 }
 .jspsych-btn:hover {
   background-color: #2b00c8; 
@@ -32,11 +30,11 @@ body {
 
 
 .jspsych-slider::-webkit-slider-thumb {
-    border: 10px solid #fe9900;
+    border: 10px solid #2b00c8;
     height: 80px;
     width: 80px;
     border-radius: 40px;
-    background: #ffcc00;
+    background: white;
     margin-top: -20px;
 }   
 
@@ -46,11 +44,18 @@ body {
     width: 60%;
     height: 50px;
     cursor: pointer;
-    background: black;
+    background: #2b00c820;
     box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
     border-radius: 5px;
-    border: 5px solid #aaa;
+    border: 5px solid #2b00c8;
 }     
+
+
+.noselect {
+    -webkit-user-select: none; /* Safari */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
 
 #jspsych-progressbar-container {
     color: #000000e9;
@@ -96,14 +101,22 @@ body {
 
 p {
   font-family: Inter; /* use font */
+    -webkit-user-select: none; /* Safari */
+            user-select: none; 
 }
 
 h1 {
-    font-family: Malington;
+  font-family: Malington;
+    -webkit-user-select: none; /* Safari */
+            user-select: none;
 }
 h2 {
-    font-family: Malington;
+  font-family: Malington;
+    -webkit-user-select: none; /* Safari */
+            user-select: none; 
 }
 h3 {
-    font-family: Malington;
+  font-family: Malington;
+    -webkit-user-select: none; /* Safari */
+            user-select: none;
 }

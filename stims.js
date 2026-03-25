@@ -1,4 +1,4 @@
-const stims = [
+let stims = [
 "neutral_faces/CFD-AF-200-228-N.png",
 "neutral_faces/CFD-AF-201-060-N.png",
 "neutral_faces/CFD-AF-202-122-N.png",
