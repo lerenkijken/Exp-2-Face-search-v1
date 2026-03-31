@@ -1,4 +1,10 @@
 
+html, body {
+  overscroll-behavior: none;
+      -webkit-user-select: none; /* Safari */
+            user-select: none;
+}
+
 .jspsych-display-element {
   font-size: 35px;
   color: black;

@@ -2,12 +2,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Exp 2</title>
+    <title>Exp 2 - Face search</title>
     <!-- Get all the required libraries -->
     <script src="https://unpkg.com/jspsych@8.2.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-image-button-response@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-image-slider-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@2.1.0"></script>
@@ -22,8 +23,9 @@
     
     <!-- Styling -->
     <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />  
-    <link rel="stylesheet" href="lerenkijken_style.css">
+    <link rel="stylesheet" href="lerenkijken_style_exp2.css">
     <style> 
+        body {background-color:'#ffcc00';}
         .faces_background {color: black; background-color: white;}
   
     </style>
@@ -67,7 +69,7 @@
 
     // trial parameters
         // note that since there are ~600 face stims, we can have max 45 trials if we want every face to be presented at most once. 
-    const target_presence_absence_trial_counts =[ [1,1]]//[ [2,10],   [6,6],    [10,2] ] 
+    const target_presence_absence_trial_counts =[ [2,10],   [6,6],    [10,2] ] 
 
     const person_presentation_time = 1000
     const post_person_gap = 500
@@ -82,8 +84,12 @@
 
     const exp_id = 'exp_2'
     // subject id
-    let exp_version = '0.0.9'
+    let exp_version = '0.1.0'
     const url_vars = jsPsych.data.urlVariables()
+
+    const exp_start_datetime = Date.now()
+    url_vars['exp_start_datetime'] = Date(exp_start_datetime)
+    url_vars['exp_start_UTCms'] = exp_start_datetime
 
     url_vars['exp_version'] = exp_version
     url_vars['exp_id'] = exp_id
@@ -238,7 +244,22 @@
             label:'intro',
         },
     };
-  
+
+    const ask_performance = {
+        type: jsPsychHtmlSliderResponse,
+        stimulus:()=>{return `<h2>Dat was 'm! Hoe vond je het gaan?</h2>`+
+        `<p>Je hebt in totaal naar ${n_trials} mensens gezocht.<br>Hoeveel 'Ja/Nee'-vragen denk je dat je goed had?</p>`},
+        require_movement:true,
+        labels:()=>{return ["<h3>0</h3>", `<h3>${n_trials}</h3>`]},
+        min: 0, 
+        max: ()=>{return n_trials},
+        slider_start: 0, 
+        button_label: "Volgende",    
+        data:{
+            label:'ask_performance',
+        },
+    };
+
 
     const debrief = {
         type: jsPsychHtmlButtonResponse,
@@ -246,12 +267,12 @@
             let n_trials =jsPsych.data.get().filter({label: 'ask_presence'}).count()
             let n_correct = jsPsych.data.get().filter({label: 'ask_presence', correct:1}).count()
             let p_confidence = jsPsych.data.get().filter({label: 'ask_confidence'}).select('response').mean()
-            return "<h3>Dat was 'm! Hoe vond je het gaan?</h3>"+
+            return "<h3>Zo goed ben jij met gezichten!</h3>"+
             `<p>Je had <b>${n_correct} van de ${n_trials}</b> vragen goed!</p>`+
             `<p>Je was ${Math.round(p_confidence)}% zeker van je antwoorden.</p>`
         },
         save_trial_parameters:{stimulus:false},
-        choices: ["Terug naar de site!"],
+        choices: ["Terug naar de homepage!"],
         data:{
             label:'debrief',
         },
@@ -334,7 +355,7 @@
     /// Experiment design
 
     // randomly select present/absent trial counts
-    let [n_present_trials, n_absent_trials] = jsPsych.randomization.sampleWithoutReplacement(target_presence_absence_trial_counts, 1)[0]
+    let [n_present_trials, n_absent_trials] = get_rand_from_array(target_presence_absence_trial_counts)
     let n_trials = n_present_trials + n_absent_trials
 
     // an array with true's and false's (i.e. target presence) -> then shuffles 
@@ -367,9 +388,37 @@
     }
 
     // define & run the exp. timeline
-    const timeline = [user_info_trial, preload_batch, intro, ...experimental_trials, save_data, debrief,]//  save_data, outro]
+    const timeline = [user_info_trial, preload_batch, intro, ...experimental_trials, ask_performance, save_data, debrief,] 
 
     jsPsych.run(timeline);
+
+
+
+    // utility functions
+     // extra utility functions
+    function get_rand_rgb_str(){
+        return `rgb(${Math.round(Math.random()*255)}, ${Math.round(Math.random()*255)}, ${Math.round(Math.random()*255)})`
+    }
+
+    function get_rand_int(min, max) { 
+        // get radom integer value between min max, both inclusive
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    function get_rand_from_array(array) {
+        let i = get_rand_int(0, array.length - 1)
+        return array[i]
+    }
+    
+    function get_rand_float(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function get_dist(x1, y1, x2, y2) {
+        return ( (x2-x1)**2 + (y2-y1)**2 )**0.5
+    }
 
   </script>
 </html>
