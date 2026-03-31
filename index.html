@@ -57,7 +57,8 @@
         show_progress_bar: true,
         message_progress_bar: '',
         on_finish: function() {
-            jsPsych.data.displayData();
+           //jsPsych.data.displayData('json');
+           window.location.href = 'https://lerenkijken.nl/';
         }
     });
 
@@ -84,7 +85,7 @@
 
     const exp_id = 'exp_2'
     // subject id
-    let exp_version = '0.1.0'
+    let exp_version = '0.1.2'
     const url_vars = jsPsych.data.urlVariables()
 
     const exp_start_datetime = Date.now()
