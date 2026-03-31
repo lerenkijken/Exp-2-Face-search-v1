@@ -248,9 +248,9 @@
     const ask_performance = {
         type: jsPsychHtmlSliderResponse,
         stimulus:()=>{return `<h2>Dat was 'm! Hoe vond je het gaan?</h2>`+
-        `<p>Je hebt in totaal naar ${n_trials} mensens gezocht.<br>Hoeveel 'Ja/Nee'-vragen denk je dat je goed had?</p>`},
+        `<p>Je hebt in totaal naar ${n_trials} personen gezocht.<br>Hoeveel 'Ja/Nee'-vragen had je goed, denk je?</p>`},
         require_movement:true,
-        labels:()=>{return ["<h3>0</h3>", `<h3>${n_trials}</h3>`]},
+        labels:()=>{return ["<h3>0</h3>", `<h3>${Math.round(n_trials/2)}</h3>`, `<h3>${n_trials}</h3>`]},  //()=>{return [...Array(13).keys()].map((v)=>`<h3>${v}</h3>`)},
         min: 0, 
         max: ()=>{return n_trials},
         slider_start: 0, 
