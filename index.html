@@ -62,52 +62,72 @@
         }
     });
 
-    // meta info 
-    const img_server_src = 'https://www.lerenkijken.nl/cdn/'
-    stims = stims.map( (s) => img_server_src + s)
-    function add_trial_duration (data) {data.measured_trial_duration = data.time_elapsed - jsPsych.data.get().last(2).values()[0].time_elapsed}
+      
 
-
-    // trial parameters
-        // note that since there are ~600 face stims, we can have max 45 trials if we want every face to be presented at most once. 
-    const target_presence_absence_trial_counts =[ [2,10],   [6,6],    [10,2] ] 
-
-    const person_presentation_time = 1000
-    const post_person_gap = 500
-    const grid_presentation_time = 1500
-    const post_grid_gap = 500
-    const n_crowd_cols = 3
-    const n_crowd_rows = 4
-    const crowd_size = n_crowd_cols * n_crowd_rows
-    const crowd_and_target_size = crowd_size + 1
-
-
-
-    const exp_id = 'exp_2'
-    // subject id
-    let exp_version = '0.1.2'
-    const url_vars = jsPsych.data.urlVariables()
-
-    const exp_start_datetime = Date.now()
-    url_vars['exp_start_datetime'] = Date(exp_start_datetime)
-    url_vars['exp_start_UTCms'] = exp_start_datetime
-
-    url_vars['exp_version'] = exp_version
-    url_vars['exp_id'] = exp_id
-
-    const user_info_trial = {
-        type: jsPsychBrowserCheck,
-        data: url_vars
-    };
-
-
-
+     
     /*
     NOTE!!!!!
 
     // const stims    is defined in another file named: stims.js
 
-    */
+    */     
+    // meta info 
+    const img_server_src = 'https://www.lerenkijken.nl/cdn/'
+    stims = stims.map( (s) => img_server_src + s)
+
+
+    function add_trial_duration (data) {data.measured_trial_duration = data.time_elapsed - jsPsych.data.get().last(2).values()[0].time_elapsed}
+
+
+    // trial parameters
+        // note that since there are ~600 face stims, we can have max 45 trials if we want every face to be presented at most once. 
+    const target_presence_absence_trial_counts =[  [2,10],   [6,6],    [10,2] ] 
+
+    const person_presentation_time = 2000
+    const post_person_gap = 500
+    const grid_presentation_time = 2000
+    const post_grid_gap = 500
+    const n_crowd_cols = 3
+    const n_crowd_rows = 4
+    const crowd_size = n_crowd_cols * n_crowd_rows
+    const crowd_and_target_size = crowd_size + 1
+    
+
+
+    // experiment meta info 
+    let exp_version = '0_1_2'
+    const exp_id = 'exp_2_v'+exp_version
+    console.log("Exp ID: "+exp_id)
+    
+    const url_vars = jsPsych.data.urlVariables()
+    
+    url_vars['exp_version'] = exp_version
+    url_vars['exp_id'] = exp_id
+
+    const exp_start_datetime = Date.now()
+    url_vars['exp_start_datetime'] = Date(exp_start_datetime)
+    url_vars['exp_start_UTCms'] = exp_start_datetime
+
+    const user_info_trial = {
+        type: jsPsychBrowserCheck,
+        data: url_vars,
+        on_finish: resize_contents,
+    };
+
+
+    function resize_contents () {
+        let jsPsych_contents = document.getElementsByClassName('jspsych-content');
+        if (window.innerHeight > 1.25 * window.innerWidth) {
+            for (let i =0; i< jsPsych_contents.length; i++) {
+                jsPsych_contents[i].style.width = '90%'
+                // jsPsych_contents[i].style.fontSize = '35px'
+                console.log('contents resized')
+
+            }
+        }
+    }
+
+  
 
     function make_grid_stim(trial_stims){
       let min_size = Math.min( window.innerWidth/3, window.innerHeight/4)
@@ -137,7 +157,8 @@
 
 
 
-    function make_trial_sequence(target_presence, trial_stims){
+    function make_trial_sequence(target_presence, trial_stims, is_practice=false){
+        // console.log('neutral_faces_small/CFD-AM-247-165-N.png')
                     
         // pick random face from trial stims as ta
         let target_stim;
@@ -150,7 +171,23 @@
             target_stim = trial_stims.splice(target_index, 1)  // select target face and remove it from the full crowd
         }
 
-        
+        const preload_trial_stims = {
+            type: jsPsychPreload,
+            images: trial_stims,
+            show_progress_bar: false,
+            message: "<p>Klaar voor de volgende persoon?</p>",
+            on_start: () => {
+                // preload_start_timestamp = performance.now()
+            }          
+        } 
+
+        const post_preload = {
+            type: jsPsychHtmlKeyboardResponse,
+            images: trial_stims,
+            show_progress_bar: false,
+            message: "<p>Klaar voor de volgende persoon?</p>",            
+        } 
+
         // Make subtrials 
         const show_person_to_search = {
             type: jsPsychImageKeyboardResponse,
@@ -165,7 +202,11 @@
                 target_presence: target_presence ? 'present' : 'absent',
             },
             css_classes: ['faces_background'],
-            save_trial_parameters: {post_trial_gap: true, }
+            save_trial_parameters: {post_trial_gap: true, },
+            on_start: () => {
+                
+
+            }
 
         };
 
@@ -185,10 +226,10 @@
         };
 
         const ask_presence = {
-            type: jsPsychImageButtonResponse,
-            stimulus: target_stim,
-            stimulus_width: () => {return Math.min( window.innerWidth/3, window.innerHeight/4) * 1.5 },
-            prompt: "<p>Zat deze persoon in de groep?</p>",
+            type: jsPsychHtmlButtonResponse,
+            stimulus: "<p>Zat de persoon die<br>je zocht in de groep?</p>",// target_stim,
+            //stimulus_width: () => {return Math.min( window.innerWidth/3, window.innerHeight/4) * 1.5 },
+            // prompt:
             choices: ["Ja", "Nee"],
             data:{
                 label:'ask_presence',
@@ -207,16 +248,17 @@
         }
 
         const ask_confidence = {
-            type: jsPsychImageSliderResponse,
-            stimulus: target_stim,
-            stimulus_width: function(){return Math.min( window.innerWidth/3, window.innerHeight/4) },
+            type: jsPsychHtmlSliderResponse,
+            stimulus: function(){
+                let response_data =  jsPsych.data.getLastTrialData().trials[0]
+                let resp_ja_nee = ['Ja', 'Nee'][response_data.response]
+                let resp_wel_niet = ['wel', 'niet'][response_data.response]
+                return `<p>Je zei <b>${resp_ja_nee}</b>.<br>Hoe zeker weet je dat die persoon er <b>${resp_wel_niet}</b> was?</p>`
+            },//target_stim,
+            // stimulus_width: function(){return Math.min( window.innerWidth/3, window.innerHeight/4) },
             require_movement:true,
             labels: ["<p align='right'><b>← Niet zeker</b></p>",'', "<p align='left'><b>Heel zeker →</b></p>"],
-            prompt: function(){
-                let response_data =  jsPsych.data.getLastTrialData().trials[0]
-                let prev_response = ['WEL', 'NIET'][response_data.response]
-                return `<p>Je gaf aan dat deze persoon er <b>${prev_response}</b> was.<br>Hoe zeker weet je dat?</p>`
-            },
+            
             post_trial_gap: 750,
             button_label: "Volgende",    
             data:{
@@ -225,9 +267,9 @@
             css_classes: ['faces_background'],
             save_trial_parameters: {post_trial_gap: true}
         };
-
+    // preload_trial_stims,
         const one_trial_procedure = {
-            timeline: [show_person_to_search, show_grid, ask_presence, ask_confidence]
+            timeline: [ show_person_to_search, show_grid, ask_presence, ask_confidence]
         }
 
         return one_trial_procedure
@@ -236,7 +278,7 @@
     // Other trials
     const intro = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: () => "<h2>Leuk dat je meedoet! "+exp_version+"</h2>"+
+        stimulus: () => "<h2>Leuk dat je meedoet!</h2>"+
         `<p>Je gaat zo ${n_trials} keer een persoon zoeken in een groep.</p>`+
         "<p>Jij geeft dan aan of die er was (of niet), én hoe zeker je dat weet!</p>"+
         "<p>Klaar voor?</p>",
@@ -268,19 +310,31 @@
             let n_trials =jsPsych.data.get().filter({label: 'ask_presence'}).count()
             let n_correct = jsPsych.data.get().filter({label: 'ask_presence', correct:1}).count()
             let p_confidence = jsPsych.data.get().filter({label: 'ask_confidence'}).select('response').mean()
-            return "<h3>Zo goed ben jij met gezichten!</h3>"+
+            return "<h3>Zo goed dus ben jij met gezichten:</h3>"+
             `<p>Je had <b>${n_correct} van de ${n_trials}</b> vragen goed!</p>`+
             `<p>Je was ${Math.round(p_confidence)}% zeker van je antwoorden.</p>`
         },
         save_trial_parameters:{stimulus:false},
-        choices: ["Terug naar de homepage!"],
+        button_layout:'grid',
+        grid_rows:2,
+        choices: ["Probeer het nog eens!", "Doe een ander Experiment"] ,
         data:{
             label:'debrief',
         },
         on_start: function(){
             jsPsych.progressBar.progress = 1; // set progress bar to 100% full.
         },
+        on_finish: function(){
+            let resp_idx = jsPsych.data.get().last().select('response').values[0]
+            if (resp_idx == 0){
+                window.location.reload();
+            }
+            if (resp_idx == 1){
+                window.location.href = 'https://lerenkijken.nl/#experimenten' ;
+            }
+        },
     };
+
     const outro = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: () => {return "Your data was successfully saved!"+
@@ -323,18 +377,20 @@
             try {
                 window.xhr = $.post('https://www.lerenkijken.nl/api/save', jsPsych.data.get().json()).done(function(){
                     if(xhr.status == 200){
-                        // console.log('OK!');
                         done()
                     } else{
                         console.log(xhr.status);
+                        done()
                     }
                 }).fail(function(){
                     console.log(xhr.status);
+                    done()
                 });
             } catch (error){
                 console.error(error);
+                done()
             }
-            done()
+           
         },
         on_start: function(){
             // write summary data to the first object
@@ -368,11 +424,14 @@
     let shuffled_face_stims = jsPsych.randomization.shuffle(stims)
     let face_stims_array = [] 
     let stims_to_preload = []
+    console.log('crowd_and_target_size', crowd_and_target_size)
 
     for (let face_stim_idx=0; face_stim_idx < crowd_and_target_size*n_trials; face_stim_idx += crowd_and_target_size){ 
           let chunk_of_stims = shuffled_face_stims.slice(face_stim_idx, face_stim_idx+crowd_and_target_size)
           face_stims_array.push(chunk_of_stims)
           stims_to_preload.push(...chunk_of_stims)
+
+          console.log('chunk_of_stims.length = ', chunk_of_stims.length)
     }
 
     const preload_batch = {
@@ -381,16 +440,36 @@
         message: "<p>Foto's laden:</p>",
     } 
 
+    let preload_start_timestamp;
+    let preload_finish_timestamp
+    const preload_with_call = {
+        type: jsPsychCallFunction,
+        async: true,
+        func: function(done){
+            preload_start_timestamp = performance.now();
+            
+            jsPsych.pluginAPI.preloadImages(
+                stims_to_preload, callback_complete = () =>{
+                preload_finish_timestamp = performance.now()
+                console.log("Preloanding took "+ ((preload_finish_timestamp - preload_start_timestamp)/1000).toFixed(2) + ' seconds' )
+            }
+            )
+            done()
+        },
+    } 
+
     // make experimental trials
     let experimental_trials = []
     for (let t=0; t < n_trials;  t++){ 
           let trial = make_trial_sequence(shuffled_target_presence_array[t], face_stims_array[t])
           experimental_trials.push(trial)
+          
     }
 
     // define & run the exp. timeline
-    const timeline = [user_info_trial, preload_batch, intro, ...experimental_trials, ask_performance, save_data, debrief,] 
+    const timeline = [user_info_trial, preload_with_call, intro, ...experimental_trials, ask_performance, save_data, debrief] 
 
+    // preload_batch,
     jsPsych.run(timeline);
 
 
@@ -420,6 +499,14 @@
     function get_dist(x1, y1, x2, y2) {
         return ( (x2-x1)**2 + (y2-y1)**2 )**0.5
     }
+
+
+    /* Verison update log
+
+    
+    
+    */ 
+
 
   </script>
 </html>

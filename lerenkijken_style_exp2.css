@@ -6,15 +6,19 @@ html, body {
 }
 
 .jspsych-display-element {
-  font-size: 35px;
+  /* font-size: 35px; */
   color: black;
   background-color: white;
 }
 
 .jspsych-content {
-  font-size: 35px;
+  /* font-size: 25px; */
   color: black;
   background-color: white;
+  position: absolute;
+  top: 57px;
+  left: 50%; 
+  transform: translateX(-50%);
 }
 
 .jspsych-btn {
@@ -107,6 +111,7 @@ html, body {
 
 p {
   font-family: Inter; /* use font */
+  font-size: x-large;
     -webkit-user-select: none; /* Safari */
             user-select: none; 
 }
