@@ -95,7 +95,7 @@
 
 
     // experiment meta info 
-    let exp_version = '0_2_3'
+    let exp_version = '0_2_4'
     const exp_id = 'exp_2_v'+exp_version
     console.log("Exp ID: "+exp_id)
     
@@ -160,12 +160,14 @@
 
 
 
-    function make_trial_sequence(target_presence, trial_stims, is_practice=false){
+    function make_trial_sequence(target_presence, trial_stims, experimental_trial_index){
         // console.log('neutral_faces_small/CFD-AM-247-165-N.png')
                     
         // pick random face from trial stims as ta
         let target_stim;
         let target_index = jsPsych.randomization.randomInt(0, trial_stims.length-1)
+
+        let pres_dur_factor = experimental_trial_index == 0 ? 1.5 : 1 
 
         if (target_presence){
             target_stim = trial_stims.slice(target_index, target_index+1)   // select target face
@@ -182,7 +184,7 @@
             stimulus_width: () => {return Math.min( window.innerWidth/3, window.innerHeight/4) * 1.5 },
             prompt: "<p>Zoek deze persoon in de volgende groep.</p>",
             choices: 'NO_KEYS',
-            trial_duration: person_presentation_time,
+            trial_duration: person_presentation_time * pres_dur_factor,
             post_trial_gap: post_person_gap,
             data:{
                 label:'show_person_to_search',
@@ -201,7 +203,7 @@
             type: jsPsychHtmlKeyboardResponse,
             stimulus: make_grid_stim(trial_stims),
             choices: 'NO_KEYS',
-            trial_duration: grid_presentation_time,
+            trial_duration: grid_presentation_time * pres_dur_factor,
             save_trial_parameters:{stimulus:false},
             post_trial_gap: post_grid_gap,
             data:{
@@ -263,8 +265,8 @@
     const intro = {
         type: jsPsychHtmlButtonResponse,
         stimulus: () => `<h2>Leuk dat je meedoet!</h2>`+
-        `<p>Je gaat zo ${n_trials} keer een persoon zoeken in een groep. <br>
-        Jij geeft dan aan of die er was (of niet), én hoe zeker je dat weet! <br>
+        `<p>Je gaat zo ${n_trials} verschillende een personen zoeken in verschillende een groepen. <br>
+        Jij geeft elke keer aan of de persoon er was (of niet), én hoe zeker je dat weet! <br>
         Klaar voor? </p>`,
         choices: ["Begin!"],
         data:{
@@ -440,7 +442,7 @@
     // make experimental trials
     let experimental_trials = []
     for (let t=0; t < n_trials;  t++){ 
-          let trial = make_trial_sequence(shuffled_target_presence_array[t], face_stims_array[t])
+          let trial = make_trial_sequence(shuffled_target_presence_array[t], face_stims_array[t], t)
           experimental_trials.push(trial)
           
     }
@@ -494,13 +496,25 @@
 
     v 0.2.2:
     1. removed version number
-    
 
     v 0.2.3:
     1. redirect top window after finishing
 
+    v 0.2.4:
+    1. text improvements
+    2. make first trial a 1.5x slower paced.
+
+
+
+    TO DO's:
+    - add practice trials
+
+
     
     */ 
+
+
+
 
 
   </script>
