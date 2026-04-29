@@ -8,13 +8,14 @@ html, body {
 .jspsych-display-element {
   color: black;
   background-color: white;
+  font-size: x-large;
 }
 
 .jspsych-content {
   color: black;
   background-color: white;
-  position: absolute;
-  top: 57px;
+  position: fixed;
+  
   left: 50%; 
   transform: translateX(-50%);
 }
@@ -65,6 +66,14 @@ html, body {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
+
+.face-grid-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+
+
 #jspsych-progressbar-container {
     color: #000000e9;
     border-bottom: 5px solid white;
@@ -83,6 +92,8 @@ html, body {
 #jspsych-progressbar-inner {
     background-color: #2d00c8;
 }
+
+
 
 
 /* Fonts */

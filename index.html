@@ -95,7 +95,7 @@
 
 
     // experiment meta info 
-    let exp_version = '0_1_7'
+    let exp_version = '0_2_0'
     const exp_id = 'exp_2_v'+exp_version
     console.log("Exp ID: "+exp_id)
     
@@ -111,7 +111,6 @@
     const user_info_trial = {
         type: jsPsychBrowserCheck,
         data: url_vars,
-        // on_finish: resize_contents,
     };
 
 
@@ -130,24 +129,28 @@
   
 
     function make_grid_stim(trial_stims){
-      let min_size = Math.min( window.innerWidth/3, window.innerHeight/4)
-      let dim = min_size * 0.8
-      const w = 350, h = 246
-      let scaling = dim/w
-      let dim_w = w * scaling 
-      let dim_h = h * scaling 
+        let w = 350, h = 246
+        let dim
 
-      let i = 0
-      let grid_stim = ''
-      
-      for (let row=0; row<n_crowd_rows; row++){
-            for (let col=0; col<n_crowd_cols; col++){                
-                grid_stim += `<img src="${trial_stims[i]}" width="${dim_w}" height="${dim_h}" >`
-                i++
-            }
-            grid_stim += '<br>' 
-      }
-      return grid_stim
+        if (window.innerWidth/3 < window.innerHeight/4) {   // if too little window width
+            dim = 0.9 * window.innerWidth/3   
+        } else {                                            // if too little window height
+            dim = window.innerHeight/4
+        }
+
+        let scaling = dim/w
+        let dim_w = w * scaling 
+        let dim_h = h * scaling 
+
+        let n_grid_faces = n_crowd_rows * n_crowd_cols
+
+        let grid_stim = `<div class="face-grid-wrapper">`
+        for (let i=0; i<n_grid_faces; i++){             
+            grid_stim += `<div><img src="${trial_stims[i]}" width="${dim_w}" height="${dim_h}" ></div>`
+        }
+        grid_stim += '</div>'
+
+        return grid_stim
 
     }
 
@@ -171,22 +174,6 @@
             target_stim = trial_stims.splice(target_index, 1)  // select target face and remove it from the full crowd
         }
 
-        const preload_trial_stims = {
-            type: jsPsychPreload,
-            images: trial_stims,
-            show_progress_bar: false,
-            message: "<p>Klaar voor de volgende persoon?</p>",
-            on_start: () => {
-                // preload_start_timestamp = performance.now()
-            }          
-        } 
-
-        const post_preload = {
-            type: jsPsychHtmlKeyboardResponse,
-            images: trial_stims,
-            show_progress_bar: false,
-            message: "<p>Klaar voor de volgende persoon?</p>",            
-        } 
 
         // Make subtrials 
         const show_person_to_search = {
@@ -227,9 +214,7 @@
 
         const ask_presence = {
             type: jsPsychHtmlButtonResponse,
-            stimulus: "<p>Zat de persoon die<br>je zocht in de groep?</p>",// target_stim,
-            //stimulus_width: () => {return Math.min( window.innerWidth/3, window.innerHeight/4) * 1.5 },
-            // prompt:
+            stimulus: "<p>Zat de persoon die<br>je zocht in de groep?</p>",
             choices: ["Ja", "Nee"],
             data:{
                 label:'ask_presence',
@@ -253,11 +238,11 @@
                 let response_data =  jsPsych.data.getLastTrialData().trials[0]
                 let resp_ja_nee = ['Ja', 'Nee'][response_data.response]
                 let resp_wel_niet = ['wel', 'niet'][response_data.response]
-                return `<p>Je zei <b>${resp_ja_nee}</b>.<br>Hoe zeker weet je dat die persoon er <b>${resp_wel_niet}</b> was?</p>`
+                return `<p>Je zei <b>${resp_ja_nee}</b>.<br>Hoe zeker weet je dat die persoon er <b>${resp_wel_niet}</b> was?</p>`+
+                 `<p style="white-space:pre;"><b> ⟵ Niet zeker                  Heel zeker ⟶</b></p>`
             },
             require_movement:true,
-            labels: [ '',`<p><b>⟵<br>Niet&nbsp;zeker</b></p>`, '',  '',  `<p><b>⟶<br>Heel&nbsp;zeker</b></p>`, ''], // ['',`<p><b>←&nbsp;Niet&nbsp;zeker&nbsp;Heel&nbsp;zeker&nbsp;</b></p>`, ''],//  ['',"<p><b>←</b></p>","<p><b>Niet&nbsp;zeker</b></p>", '', "<p><b>Heel&nbsp;zeker</b></p>",],
-            
+            // labels: [ ],
             post_trial_gap: 750,
             button_label: "Volgende",    
             data:{
@@ -266,7 +251,7 @@
             css_classes: ['faces_background'],
             save_trial_parameters: {post_trial_gap: true}
         };
-    // preload_trial_stims,
+        
         const one_trial_procedure = {
             timeline: [ show_person_to_search, show_grid, ask_presence, ask_confidence]
         }
@@ -433,11 +418,6 @@
           console.log('chunk_of_stims.length = ', chunk_of_stims.length)
     }
 
-    // const preload_batch = {
-    //     type: jsPsychPreload,
-    //     images: stims_to_preload,
-    //     message: "<p>Foto's laden:</p>",
-    // } 
 
     let preload_start_timestamp;
     let preload_finish_timestamp
@@ -466,8 +446,8 @@
     }
 
     // define & run the exp. timeline
-    const timeline = [user_info_trial,preload_with_call, intro,
-     make_trial_sequence(shuffled_target_presence_array[0], face_stims_array[0]).timeline[3],
+    const timeline = [user_info_trial, preload_with_call, intro,
+    //  make_trial_sequence(shuffled_target_presence_array[0], face_stims_array[0]).timeline[3],
        ...experimental_trials, ask_performance, save_data, debrief] 
 
     // preload_batch,
@@ -504,7 +484,10 @@
 
     /* Verison update log
 
-    
+    v 0.2.0:
+    1. fixed face grid 
+    2. fixed slider label positioning
+    3. fixed preloading imgs
     
     */ 
 
