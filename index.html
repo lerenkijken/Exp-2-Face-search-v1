@@ -257,7 +257,7 @@
             },//target_stim,
             // stimulus_width: function(){return Math.min( window.innerWidth/3, window.innerHeight/4) },
             require_movement:true,
-            labels: ["<p align='right'><b>← Niet zeker</b></p>",'', "<p align='left'><b>Heel zeker →</b></p>"],
+            labels: ["<p><b>← Niet zeker</b></p>", "<p><b>Heel zeker →</b></p>"],
             
             post_trial_gap: 750,
             button_label: "Volgende",    
@@ -434,11 +434,11 @@
           console.log('chunk_of_stims.length = ', chunk_of_stims.length)
     }
 
-    const preload_batch = {
-        type: jsPsychPreload,
-        images: stims_to_preload,
-        message: "<p>Foto's laden:</p>",
-    } 
+    // const preload_batch = {
+    //     type: jsPsychPreload,
+    //     images: stims_to_preload,
+    //     message: "<p>Foto's laden:</p>",
+    // } 
 
     let preload_start_timestamp;
     let preload_finish_timestamp
@@ -467,7 +467,9 @@
     }
 
     // define & run the exp. timeline
-    const timeline = [user_info_trial, preload_with_call, intro, ...experimental_trials, ask_performance, save_data, debrief] 
+    const timeline = [user_info_trial,
+     make_trial_sequence(shuffled_target_presence_array[0], face_stims_array[0]).timeline[3],
+      preload_with_call, intro, ...experimental_trials, ask_performance, save_data, debrief] 
 
     // preload_batch,
     jsPsych.run(timeline);

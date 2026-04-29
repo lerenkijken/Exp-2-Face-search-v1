@@ -6,13 +6,11 @@ html, body {
 }
 
 .jspsych-display-element {
-  /* font-size: 35px; */
   color: black;
   background-color: white;
 }
 
 .jspsych-content {
-  /* font-size: 25px; */
   color: black;
   background-color: white;
   position: absolute;
@@ -51,7 +49,7 @@ html, body {
 .jspsych-slider::-webkit-slider-runnable-track {
     appearance: none;
     -webkit-appearance: none;
-    width: 60%;
+    width: 80%;
     height: 50px;
     cursor: pointer;
     background: #2b00c820;
