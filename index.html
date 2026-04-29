@@ -95,7 +95,7 @@
 
 
     // experiment meta info 
-    let exp_version = '0_2_1'
+    let exp_version = '0_2_2'
     const exp_id = 'exp_2_v'+exp_version
     console.log("Exp ID: "+exp_id)
     
@@ -262,7 +262,7 @@
     // Other trials
     const intro = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: () => `<h2>Leuk dat je meedoet!  ${exp_version}</h2>`+
+        stimulus: () => `<h2>Leuk dat je meedoet!</h2>`+
         `<p>Je gaat zo ${n_trials} keer een persoon zoeken in een groep. <br>
         Jij geeft dan aan of die er was (of niet), én hoe zeker je dat weet! <br>
         Klaar voor? </p>`,
@@ -490,7 +490,10 @@
     3. fixed preloading imgs
 
     v 0.2.1:
-    1. button on intro
+    1. intro screen size fixed
+
+    v 0.2.2:
+    1. removed version number
     
     */ 
 
