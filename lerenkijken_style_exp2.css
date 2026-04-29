@@ -15,7 +15,7 @@ html, body {
   color: black;
   background-color: white;
   position: fixed;
-  
+  width: 95%;
   left: 50%; 
   transform: translateX(-50%);
 }
