@@ -95,7 +95,7 @@
 
 
     // experiment meta info 
-    let exp_version = '0_1_2'
+    let exp_version = '0_1_4'
     const exp_id = 'exp_2_v'+exp_version
     console.log("Exp ID: "+exp_id)
     
@@ -278,7 +278,7 @@
     // Other trials
     const intro = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: () => "<h2>Leuk dat je meedoet!</h2>"+
+        stimulus: () => `<h2>Leuk dat je meedoet!  ${exp_version}</h2>`+
         `<p>Je gaat zo ${n_trials} keer een persoon zoeken in een groep.</p>`+
         "<p>Jij geeft dan aan of die er was (of niet), én hoe zeker je dat weet!</p>"+
         "<p>Klaar voor?</p>",
@@ -467,9 +467,9 @@
     }
 
     // define & run the exp. timeline
-    const timeline = [user_info_trial,
+    const timeline = [user_info_trial,preload_with_call, intro,
      make_trial_sequence(shuffled_target_presence_array[0], face_stims_array[0]).timeline[3],
-      preload_with_call, intro, ...experimental_trials, ask_performance, save_data, debrief] 
+       ...experimental_trials, ask_performance, save_data, debrief] 
 
     // preload_batch,
     jsPsych.run(timeline);
