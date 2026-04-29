@@ -1,6 +1,6 @@
 
 html, body {
-  overscroll-behavior: none;
+  /* overscroll-behavior: none; */
       -webkit-user-select: none; /* Safari */
             user-select: none;
 }
