@@ -81,7 +81,7 @@
 
     // trial parameters
         // note that since there are ~600 face stims, we can have max 45 trials if we want every face to be presented at most once. 
-    const target_presence_absence_trial_counts =[  [2,10],   [6,6],    [10,2] ] 
+    const target_presence_absence_trial_counts = [[1,1]]// [  [2,10],   [6,6],    [10,2] ] 
 
     const person_presentation_time = 2000
     const post_person_gap = 500
@@ -311,10 +311,10 @@
         on_finish: function(){
             let resp_idx = jsPsych.data.get().last().select('response').values[0]
             if (resp_idx == 0){
-                window.location.reload();
+                window.top.location.href = 'https://lerenkijken.nl/experiment/veelplegers-weinigplegers';
             }
             if (resp_idx == 1){
-                window.location.href = 'https://lerenkijken.nl/#experimenten'; // fix url that stays on exp. maybe iframe issue??
+                window.top.location.href = 'https://lerenkijken.nl/#experimenten'; // fix url that stays on exp. maybe iframe issue??
             }
         },
     };
@@ -494,6 +494,11 @@
 
     v 0.2.2:
     1. removed version number
+    
+
+    v 0.2.3:
+    1. redirect top window after finishing
+
     
     */ 
 
