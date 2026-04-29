@@ -39,18 +39,18 @@ html, body {
 
 .jspsych-slider::-webkit-slider-thumb {
     border: 10px solid #2b00c8;
-    height: 80px;
-    width: 80px;
-    border-radius: 40px;
+    height: 60px;
+    width: 60px;
+    border-radius: 30px;
     background: white;
-    margin-top: -20px;
+    margin-top: -15px;
 }   
 
 .jspsych-slider::-webkit-slider-runnable-track {
     appearance: none;
     -webkit-appearance: none;
     width: 80%;
-    height: 50px;
+    height: 40px;
     cursor: pointer;
     background: #2b00c820;
     box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;

@@ -95,7 +95,7 @@
 
 
     // experiment meta info 
-    let exp_version = '0_1_5'
+    let exp_version = '0_1_6'
     const exp_id = 'exp_2_v'+exp_version
     console.log("Exp ID: "+exp_id)
     
@@ -254,10 +254,9 @@
                 let resp_ja_nee = ['Ja', 'Nee'][response_data.response]
                 let resp_wel_niet = ['wel', 'niet'][response_data.response]
                 return `<p>Je zei <b>${resp_ja_nee}</b>.<br>Hoe zeker weet je dat die persoon er <b>${resp_wel_niet}</b> was?</p>`
-            },//target_stim,
-            // stimulus_width: function(){return Math.min( window.innerWidth/3, window.innerHeight/4) },
+            },
             require_movement:true,
-            labels: ["<p><b>← Niet zeker</b></p>", "<p><b>Heel zeker →</b></p>"],
+            labels: [ '',`<p><b>⟵<br>Niet&nbsp;zeker</b></p>`, '',  '',  `<p><b>⟶<br>Heel&nbsp;zeker</b></p>`, ''], // ['',`<p><b>←&nbsp;Niet&nbsp;zeker&nbsp;Heel&nbsp;zeker&nbsp;</b></p>`, ''],//  ['',"<p><b>←</b></p>","<p><b>Niet&nbsp;zeker</b></p>", '', "<p><b>Heel&nbsp;zeker</b></p>",],
             
             post_trial_gap: 750,
             button_label: "Volgende",    
