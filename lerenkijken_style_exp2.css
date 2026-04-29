@@ -15,7 +15,8 @@ html, body {
   color: black;
   background-color: white;
   position: fixed;
-  width: 95%;
+  width: 80%;
+  max-width: 500px;
   left: 50%; 
   transform: translateX(-50%);
 }
@@ -68,8 +69,11 @@ html, body {
 
 
 .face-grid-wrapper {
+  position: fixed;
+  left: 50%; 
+  transform: translateX(-50%);
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: max-content max-content max-content;
 }
 
 

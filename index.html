@@ -27,7 +27,9 @@
     <style> 
         body {background-color:'#ffcc00';}
         .faces_background {color: black; background-color: white;}
-  
+
+        .intro_0 {width: 95%}
+
     </style>
   </head>
   <body></body>
@@ -95,7 +97,7 @@
 
 
     // experiment meta info 
-    let exp_version = '0_2_4'
+    let exp_version = '0_3_0'
     const exp_id = 'exp_2_v'+exp_version
     console.log("Exp ID: "+exp_id)
     
@@ -241,7 +243,7 @@
                 let resp_ja_nee = ['Ja', 'Nee'][response_data.response]
                 let resp_wel_niet = ['wel', 'niet'][response_data.response]
                 return `<p>Je zei <b>${resp_ja_nee}</b>.<br>Hoe zeker weet je dat die persoon er <b>${resp_wel_niet}</b> was?</p>`+
-                 `<p style="white-space:pre;"><b> ⟵ Niet zeker                  Heel zeker ⟶</b></p>`
+                 `<p style="white-space:pre;"><b> ⟵ Niet zeker       Heel zeker ⟶</b></p>`
             },
             require_movement:true,
             // labels: [ ],
@@ -251,7 +253,7 @@
                 label:'ask_confidence',
             },
             css_classes: ['faces_background'],
-            save_trial_parameters: {post_trial_gap: true}
+            save_trial_parameters: {post_trial_gap: true},
         };
         
         const one_trial_procedure = {
@@ -272,6 +274,14 @@
         data:{
             label:'intro',
         },
+        on_start: () => {
+            document.getElementById("jspsych-content").style.width = '95%'
+            document.getElementById("jspsych-content").style.maxWidth = '100%'
+        },
+        on_finish: () => {
+            document.getElementById("jspsych-content").style.width = '80%'
+            document.getElementById("jspsych-content").style.maxWidth = '500px'
+        }
     };
 
     const ask_performance = {
