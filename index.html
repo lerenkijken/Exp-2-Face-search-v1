@@ -95,7 +95,7 @@
 
 
     // experiment meta info 
-    let exp_version = '0_1_6'
+    let exp_version = '0_1_7'
     const exp_id = 'exp_2_v'+exp_version
     console.log("Exp ID: "+exp_id)
     
@@ -132,7 +132,7 @@
     function make_grid_stim(trial_stims){
       let min_size = Math.min( window.innerWidth/3, window.innerHeight/4)
       let dim = min_size * 0.8
-      let w = 2444, h = 1718
+      const w = 350, h = 246
       let scaling = dim/w
       let dim_w = w * scaling 
       let dim_h = h * scaling 
