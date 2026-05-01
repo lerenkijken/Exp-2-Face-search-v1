@@ -97,7 +97,7 @@
 
 
     // experiment meta info 
-    let exp_version = '0_3_0'
+    let exp_version = '1_0_0'
     const exp_id = 'exp_2_v'+exp_version
     console.log("Exp ID: "+exp_id)
     
@@ -306,7 +306,7 @@
             let n_trials =jsPsych.data.get().filter({label: 'ask_presence'}).count()
             let n_correct = jsPsych.data.get().filter({label: 'ask_presence', correct:1}).count()
             let p_confidence = jsPsych.data.get().filter({label: 'ask_confidence'}).select('response').mean()
-            return "<h3>Zo goed dus ben jij met gezichten:</h3>"+
+            return "<h3>Zo goed ben jij met gezichten:</h3>"+
             `<p>Je had <b>${n_correct} van de ${n_trials}</b> vragen goed!</p>`+
             `<p>Je was ${Math.round(p_confidence)}% zeker van je antwoorden.</p>`
         },

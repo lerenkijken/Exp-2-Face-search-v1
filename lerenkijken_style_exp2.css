@@ -8,7 +8,7 @@ html, body {
 .jspsych-display-element {
   color: black;
   background-color: white;
-  font-size: x-large;
+  /* font-size: x-large; */
 }
 
 .jspsych-content {
@@ -22,12 +22,12 @@ html, body {
 }
 
 .jspsych-btn {
-    font-size: x-large;
+    font-size: large;
+    padding: 0.4em 0.9em;
     border: 10px solid transparent;
     border-radius: 16px;
     color: white;
     background-color: #2b00c8d0;
-    padding: 0.6em 1.2em;
     font-family: Malington;
     -webkit-user-select: none; /* Safari */
             user-select: none; 
@@ -85,7 +85,7 @@ html, body {
 }
 
 #jspsych-progressbar-container span {
-    font-size: 20px;
+    /* font-size: 20px; */
     padding-right: 25px;
 }
 
@@ -124,7 +124,7 @@ html, body {
 
 p {
   font-family: Inter; /* use font */
-  font-size: x-large;
+  /* font-size: x-large; */
     -webkit-user-select: none; /* Safari */
             user-select: none; 
 }
